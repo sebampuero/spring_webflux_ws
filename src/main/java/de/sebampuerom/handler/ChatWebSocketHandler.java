@@ -30,7 +30,11 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         String currUserID = queueService.getCurrentUserID();
         if(currUserID == null){
-            return session.close(CloseStatus.BAD_DATA);
+            return session.close(CloseStatus.NOT_ACCEPTABLE);
+        }
+        String reqUserID = getUserIdFromSession(session);
+        if(!reqUserID.equals(currUserID)){
+            return session.close(CloseStatus.NOT_ACCEPTABLE);
         }
         return session.receive()
                 .flatMap(message -> {
@@ -47,5 +51,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                             .flatMap(chunk -> session.send(Mono.just(session.textMessage(chunk))));
                 })
                 .then();
+    }
+
+    private String getUserIdFromSession(WebSocketSession session) {
+        // Extract user ID from session, e.g., from a query parameter
+        return session.getHandshakeInfo().getUri().getQuery().split("=")[1];
     }
 }

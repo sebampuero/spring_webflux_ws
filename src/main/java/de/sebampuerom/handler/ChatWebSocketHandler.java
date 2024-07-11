@@ -6,6 +6,7 @@ import de.sebampuerom.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.CloseStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
+@Component
 public class ChatWebSocketHandler implements WebSocketHandler {
 
     private final WebClient webClient;
@@ -21,6 +23,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     @Autowired
     private QueueService queueService;
 
+    @Autowired
     public ChatWebSocketHandler(WebClient webClient, ApiConfig apiConfig) {
         this.webClient = webClient;
         this.apiUrl = apiConfig.getApiUrl();

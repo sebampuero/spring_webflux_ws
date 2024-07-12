@@ -31,7 +31,7 @@ public class QueueService {
             log.info("{} was disconnected", userId);
             String nextUser = userQueue.poll();
             if (nextUser != null) {
-                log.debug("Setting {} as current user", userId);
+                log.debug("Setting {} as current user", nextUser);
                 currentUser.set(nextUser);
             }
         }

@@ -100,3 +100,5 @@ logs/
 *.bak
 *.swp
 *~.nib
+
+start.sh

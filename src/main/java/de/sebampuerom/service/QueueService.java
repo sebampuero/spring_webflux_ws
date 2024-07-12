@@ -17,16 +17,21 @@ public class QueueService {
     public boolean tryConnect(String userId) {
         log.debug("Setting user as current user {}", userId);
         if (currentUser.get() == null) {
+            log.debug("{} is set as current user", userId);
             return currentUser.compareAndSet(null, userId);
         }
+        log.debug("{} was put in the queue", userId);
         userQueue.offer(userId);
         return false;
     }
 
     public void disconnect(String userId) {
+        log.info("Disconnecting {}", userId);
         if (currentUser.compareAndSet(userId, null)) {
+            log.info("{} was disconnected", userId);
             String nextUser = userQueue.poll();
             if (nextUser != null) {
+                log.debug("Setting {} as current user", userId);
                 currentUser.set(nextUser);
             }
         }

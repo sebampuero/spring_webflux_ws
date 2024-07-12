@@ -22,6 +22,7 @@ public class QueueWebsocketHandler implements WebSocketHandler {
     @Override
     public Mono<Void> handle(WebSocketSession session) {
         String userId = getUserIdFromSession(session);
+        log.debug("Initiated queue connection with user id {}", userId);
 
         return Mono.just(queueService.tryConnect(userId))
                 .flatMap(connected -> {
@@ -34,10 +35,11 @@ public class QueueWebsocketHandler implements WebSocketHandler {
     }
 
     private Mono<Void> handleConnectedUser(WebSocketSession session, String userId) {
+        log.debug("User is set for main chat WS connection {}", userId);
         return session.send(Mono.just(session.textMessage("Connected")))
                 .then(session.receive()
                         .doFinally(signalType -> {
-                            log.debug("Terminating connection {}", userId);
+                            log.debug("Singal connected to client. UserID: {}", userId);
                             queueService.disconnect(userId);
                         })
                         .then());

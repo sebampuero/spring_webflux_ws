@@ -1,5 +1,6 @@
 logging:
+  file.name: app.log
   level:
-    root: info
+    de.sebampuerom: INFO
 api:
   url: http://localhost:8000/prompt

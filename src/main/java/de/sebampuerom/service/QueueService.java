@@ -29,6 +29,10 @@ public class QueueService {
         }
     }
 
+    public String removeFromQueue() {
+        return userQueue.poll();
+    }
+
     public String getCurrentUserID() {
         return currentUser.get();
     }

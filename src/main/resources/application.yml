@@ -2,4 +2,4 @@ logging:
   level:
     root: info
 api:
-  url: http://localhost:8001/prompt
+  url: http://localhost:8000/prompt

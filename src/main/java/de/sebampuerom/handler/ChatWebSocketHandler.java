@@ -17,16 +17,18 @@ import reactor.core.publisher.Mono;
 @Component
 public class ChatWebSocketHandler implements WebSocketHandler {
 
-    private final WebClient webClient;
-    private final String apiUrl;
+    private WebClient webClient;
+    private ApiConfig apiConfig;
 
     @Autowired
     private QueueService queueService;
 
-    @Autowired
-    public ChatWebSocketHandler(WebClient webClient, ApiConfig apiConfig) {
+    public void setWebClient(WebClient webClient){
         this.webClient = webClient;
-        this.apiUrl = apiConfig.getApiUrl();
+    }
+
+    public void setApiConfig(ApiConfig apiConfig){
+        this.apiConfig = apiConfig;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                     jsonBody.addProperty("input", payload);
                     jsonBody.addProperty("session_id", currUserID);
                     return webClient.post()
-                            .uri(this.apiUrl)
+                            .uri(this.apiConfig.getApiUrl())
                             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                             .body(BodyInserters.fromValue(jsonBody.toString()))
                             .retrieve()
@@ -57,7 +59,6 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     }
 
     private String getUserIdFromSession(WebSocketSession session) {
-        // Extract user ID from session, e.g., from a query parameter
         return session.getHandshakeInfo().getUri().getQuery().split("=")[1];
     }
 }

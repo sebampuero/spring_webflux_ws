@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+
 @Component
 public class QueueWebsocketHandler implements WebSocketHandler {
 
@@ -31,7 +32,7 @@ public class QueueWebsocketHandler implements WebSocketHandler {
     }
 
     private Mono<Void> handleConnectedUser(WebSocketSession session, String userId) {
-        return session.send(Flux.just(session.textMessage("Connected")))
+        return session.send(Mono.just(session.textMessage("Connected")))
                 .then(session.receive()
                         .doFinally(signalType -> queueService.disconnect(userId))
                         .then());
@@ -39,20 +40,21 @@ public class QueueWebsocketHandler implements WebSocketHandler {
 
     private Mono<Void> handleQueuedUser(WebSocketSession session, String userId) {
         return Flux.interval(Duration.ofSeconds(1))
-                .flatMap(tick -> {
+                .flatMap(tick -> Mono.defer(() -> {
                     int position = queueService.getQueuePosition(userId);
                     if (position == 0) {
-                        return session.send(Mono.just(session.textMessage("Your turn")))
-                                .then(Mono.defer(() -> handleConnectedUser(session, userId)));
+                        return Mono.just(true);
                     } else {
-                        return session.send(Mono.just(session.textMessage("Queue position: " + position)));
+                        return session.send(Mono.just(session.textMessage("Queue position: " + position)))
+                                .thenReturn(false);
                     }
-                })
-                .then();
+                }))
+                .takeUntil(connected -> connected)
+                .then(handleConnectedUser(session, userId))
+                .doFinally(signalType -> queueService.removeFromQueue());
     }
 
     private String getUserIdFromSession(WebSocketSession session) {
-        // Extract user ID from session, e.g., from a query parameter
         return session.getHandshakeInfo().getUri().getQuery().split("=")[1];
     }
 }

@@ -19,18 +19,22 @@ class WebConfig {
     private final WebClient webClient;
     private final ApiConfig apiConfig;
     private final QueueWebsocketHandler queueWebsocketHandler;
+    private final ChatWebSocketHandler chatWebSocketHandler;
 
     @Autowired
-    public WebConfig(WebClient webClient, ApiConfig apiConfig, QueueWebsocketHandler queueWebsocketHandler) {
+    public WebConfig(WebClient webClient, ApiConfig apiConfig, QueueWebsocketHandler queueWebsocketHandler, ChatWebSocketHandler chatWebSocketHandler) {
         this.webClient = webClient;
         this.apiConfig = apiConfig;
         this.queueWebsocketHandler = queueWebsocketHandler;
+        this.chatWebSocketHandler = chatWebSocketHandler;
+        this.chatWebSocketHandler.setWebClient(this.webClient);
+        this.chatWebSocketHandler.setApiConfig(this.apiConfig);
     }
 
     @Bean
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/ws/chat", new ChatWebSocketHandler(this.webClient, this.apiConfig));
+        map.put("/ws/chat", this.chatWebSocketHandler);
         map.put("/ws/queue",  this.queueWebsocketHandler);
         int order = -1; // before annotated controllers
 

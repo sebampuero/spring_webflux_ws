@@ -34,8 +34,8 @@ class WebConfig {
     @Bean
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/ws/chat", this.chatWebSocketHandler);
-        map.put("/ws/queue",  this.queueWebsocketHandler);
+        map.put("/ragbot/ws/chat", this.chatWebSocketHandler);
+        map.put("/ragbot/ws/queue",  this.queueWebsocketHandler);
         int order = -1; // before annotated controllers
 
         return new SimpleUrlHandlerMapping(map, order);

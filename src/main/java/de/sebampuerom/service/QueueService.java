@@ -1,5 +1,6 @@
 package de.sebampuerom.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,11 +9,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@Slf4j
 public class QueueService {
     private final Queue<String> userQueue = new ConcurrentLinkedQueue<>();
     private final AtomicReference<String> currentUser = new AtomicReference<>();
 
     public boolean tryConnect(String userId) {
+        log.debug("Setting user as current user {}", userId);
         if (currentUser.get() == null) {
             return currentUser.compareAndSet(null, userId);
         }

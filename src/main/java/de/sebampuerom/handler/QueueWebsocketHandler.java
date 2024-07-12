@@ -1,6 +1,7 @@
 package de.sebampuerom.handler;
 
 import de.sebampuerom.service.QueueService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -12,6 +13,7 @@ import java.time.Duration;
 
 
 @Component
+@Slf4j
 public class QueueWebsocketHandler implements WebSocketHandler {
 
     @Autowired
@@ -34,7 +36,10 @@ public class QueueWebsocketHandler implements WebSocketHandler {
     private Mono<Void> handleConnectedUser(WebSocketSession session, String userId) {
         return session.send(Mono.just(session.textMessage("Connected")))
                 .then(session.receive()
-                        .doFinally(signalType -> queueService.disconnect(userId))
+                        .doFinally(signalType -> {
+                            log.debug("Terminating connection {}", userId);
+                            queueService.disconnect(userId);
+                        })
                         .then());
     }
 
@@ -51,7 +56,12 @@ public class QueueWebsocketHandler implements WebSocketHandler {
                 }))
                 .takeUntil(connected -> connected)
                 .then(handleConnectedUser(session, userId))
-                .doFinally(signalType -> queueService.removeFromQueue());
+                .doFinally(signalType ->
+                        {
+                            log.debug("Promoting user to main websocket chat {}",  userId);
+                            queueService.removeFromQueue();
+                        }
+                );
     }
 
     private String getUserIdFromSession(WebSocketSession session) {

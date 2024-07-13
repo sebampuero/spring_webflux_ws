@@ -102,3 +102,4 @@ logs/
 *~.nib
 
 start.sh
+kill.sh

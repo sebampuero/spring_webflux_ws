@@ -40,7 +40,11 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         }
 
         return sendIntroMessage(session)
-            .and(handleWebSocketMessages(session, currUserID));
+            .and(handleWebSocketMessages(session, currUserID))
+            .doFinally(signalType -> {
+                log.debug("User disconnected {}", currUserID);
+                queueService.disconnect(currUserID);
+            });
     }
 
     private Boolean shouldCloseSocket(WebSocketSession session) {

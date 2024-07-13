@@ -36,13 +36,7 @@ public class QueueWebsocketHandler implements WebSocketHandler {
 
     private Mono<Void> handleConnectedUser(WebSocketSession session, String userId) {
         log.debug("User is set for main chat WS connection {}", userId);
-        return session.send(Mono.just(session.textMessage("Connected")))
-                .then(session.receive()
-                        .doFinally(signalType -> {
-                            log.debug("Singal connected to client. UserID: {}", userId);
-                            queueService.disconnect(userId);
-                        })
-                        .then());
+        return session.send(Mono.just(session.textMessage("Connected")));
     }
 
     private Mono<Void> handleQueuedUser(WebSocketSession session, String userId) {

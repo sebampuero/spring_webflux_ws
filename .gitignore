@@ -92,6 +92,7 @@ junit*.properties
 
 # Logs
 *.log
+*.log.*
 log/
 logs/
 

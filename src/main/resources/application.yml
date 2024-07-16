@@ -1,6 +1,7 @@
 logging:
   file.name: app.log
+  file.max-history: 5
   level:
     de.sebampuerom: INFO
 api:
-  url: http://localhost:8000/prompt
+  url: http://localhost:8000/prompt #this needs to be an environment argument which is based on some sort of name resolution because of docker enviroment

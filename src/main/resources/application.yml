@@ -4,4 +4,4 @@ logging:
   level:
     de.sebampuerom: INFO
 api:
-  url: http://localhost:8000/prompt #this needs to be an environment argument which is based on some sort of name resolution because of docker enviroment
+  url: http://localhost:8000/prompt

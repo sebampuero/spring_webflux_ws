@@ -11,4 +11,8 @@ RUN mkdir /app
 
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/
 
-ENTRYPOINT ["java","-jar","/app/SpringReactiveWS-1.0-SNAPSHOT.jar", "--logging.level.de.sebampuerom=DEBUG"]
+ENV API_URL=http://localhost:8000/prompt
+ENV LOG_LEVEL=INFO
+
+ENTRYPOINT ["java", "-jar", "/app/SpringReactiveWS-1.0-SNAPSHOT.jar"]
+CMD ["--logging.level.de.sebampuerom=${LOG_LEVEL}", "--api.url=${API_URL}"]

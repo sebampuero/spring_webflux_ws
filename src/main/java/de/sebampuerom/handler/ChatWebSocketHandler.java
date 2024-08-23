@@ -68,11 +68,14 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         JsonObject firstMsgBody = new JsonObject();
         firstMsgBody.addProperty("type", "chunk");
         firstMsgBody.addProperty("content", """
-                Welcome! This is a chat powered by RAG (Retrieval Augmented Generation)
-                This does not represent me 100%! Data used is minimal because this runs 
-                on a Raspberry Pi. 
-                You can start sending messages to the RAG powered LLM now ->
-                """);
+        Welcome!
+        I am Sebastian Ampuero, software engineer, and I created this RAG (Retrival Augmented Generation) powered chat.
+        You can read more about that here: https://aws.amazon.com/what-is/retrieval-augmented-generation/
+        This chat has been given context about myself with help of RAG and the LLMs Llama (from Meta) and Gemini (from Google).
+        It does not respond like me but does its best to answer questions about me (focused on business-related information).
+        You can start with something like "How old are you and where do you live?"
+        Visit github.com/sebampuero to see the code behind.
+        """);
         return Mono.just(session.textMessage(firstMsgBody.toString()));
     }
 

@@ -35,11 +35,12 @@ public class QueueWebsocketHandler implements WebSocketHandler {
     }
 
     private Mono<Void> handleConnectedUser(WebSocketSession session, String userId) {
-        log.debug("User is set for main chat WS connection {}", userId);
+        log.debug("User has connected to chat session {}", userId);
         return session.send(Mono.just(session.textMessage("Connected")));
     }
 
     private Mono<Void> handleQueuedUser(WebSocketSession session, String userId) {
+        log.debug("User has been queued {}", userId);
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(tick -> Mono.defer(() -> {
                     int position = queueService.getQueuePosition(userId);

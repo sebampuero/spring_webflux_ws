@@ -69,7 +69,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         firstMsgBody.addProperty("type", "chunk");
         firstMsgBody.addProperty("content", """
         Welcome!
-        I am Sebastian Ampuero, software engineer, and I created this RAG (Retrival Augmented Generation) powered chat.
+        I am a software engineer, and I created this RAG (Retrival Augmented Generation) powered chat.
         You can read more about that here: https://aws.amazon.com/what-is/retrieval-augmented-generation/
         This chat has been given context about myself with help of RAG and the LLMs Llama (from Meta) and Gemini (from Google).
         It does not respond like me but does its best to answer questions about me (focused on business-related information).
